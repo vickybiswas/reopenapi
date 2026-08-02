@@ -113,7 +113,7 @@
     padding:10px 14px;background:#15142c;border-bottom:1px solid #262547}
   .codewrap .top .label{font-family:var(--mono);font-size:12px;color:#a9aad0;letter-spacing:.04em}
   .codewrap .top .size{font-family:var(--mono);font-size:11px;color:var(--accent)}
-  pre{margin:0;padding:16px;overflow:auto;color:#e7e8ff;font-size:12.5px;line-height:1.65;max-height:420px}
+  pre{margin:0;padding:16px;overflow:auto;color:#e7e8ff;font-size:12.5px;line-height:1.65;max-height:420px;white-space:pre-wrap;overflow-wrap:anywhere}
   pre .k{color:#8fa2ff}pre .s{color:#7fe0ee}pre .c{color:#7b7ca6;font-style:italic}
   pre .sig{color:#ffb4e6;font-weight:700}
   .compare{display:grid;gap:18px}
@@ -187,6 +187,20 @@
     .sigils{grid-template-columns:1fr 1fr}
     footer.site .cols{grid-template-columns:2fr 1fr 1fr 1fr}
     details.art summary .more{display:block}
+
+    /* Hide scrollbars on the center seam in two-column layouts. */
+    .compare > .codewrap:first-child pre,
+    .grid.g2 > .codewrap:nth-child(odd) pre,
+    .io > div:first-child textarea{
+      scrollbar-width:none;
+    }
+    .compare > .codewrap:first-child pre::-webkit-scrollbar,
+    .grid.g2 > .codewrap:nth-child(odd) pre::-webkit-scrollbar,
+    .io > div:first-child textarea::-webkit-scrollbar{
+      width:0;
+      height:0;
+      display:none;
+    }
   }
   @media (min-width:960px){
     nav.top{display:flex}
@@ -520,6 +534,7 @@ Pet.name <span class="sig">&lt;&gt;</span> doggie</pre>
           <div class="top"><span class="label">command line</span></div>
 <pre><span class="c"># install</span>
 npm i -g reswag
+<span class="c"># Node-based CLI, no Python required</span>
 
 <span class="c"># OpenAPI → ReSwag (the readable view)</span>
 reswag from openapi.yaml -o api.reswag
@@ -569,7 +584,7 @@ reswag from openapi.yaml --examples api.examples</pre>
         <h2>The thinking behind the notation.</h2>
       </div>
 
-      <details class="art">
+      <details class="art" data-article-action="external" data-article-url="https://www.linkedin.com/pulse/your-api-spec-should-fit-head-vicky-biswas-lg99c">
         <summary>
           <span class="n">01</span>
           <div>
@@ -610,7 +625,7 @@ reswag from openapi.yaml --examples api.examples</pre>
         </div>
       </details>
 
-      <details class="art">
+      <details class="art" data-article-action="coming-soon">
         <summary>
           <span class="n">02</span>
           <div>
@@ -659,7 +674,7 @@ reswag from openapi.yaml --examples api.examples</pre>
         </div>
       </details>
 
-      <details class="art">
+      <details class="art" data-article-action="coming-soon">
         <summary>
           <span class="n">03</span>
           <div>
@@ -1577,6 +1592,34 @@ reswag from openapi.yaml --examples api.examples</pre>
         o.setAttribute("aria-selected", on ? "true" : "false");
         $(o.getAttribute("aria-controls")).hidden = !on;
       });
+    });
+  });
+
+  // article card actions
+  var articleCards = Array.prototype.slice.call(document.querySelectorAll("#articles details.art"));
+  articleCards.forEach(function (card) {
+    var summary = card.querySelector("summary");
+    if (!summary) return;
+    summary.addEventListener("click", function (ev) {
+      var action = card.getAttribute("data-article-action");
+      if (action === "external") {
+        ev.preventDefault();
+        var url = card.getAttribute("data-article-url");
+        if (url) {
+          var a = document.createElement("a");
+          a.href = url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+        return;
+      }
+      if (action === "coming-soon") {
+        ev.preventDefault();
+        alert("Coming soon");
+      }
     });
   });
 
